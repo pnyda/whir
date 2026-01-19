@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 /// efficient Fast Fourier Transforms (FFTs).
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[serde(bound = "F: CanonicalSerialize + CanonicalDeserialize")]
+#[repr(C)]
 pub struct Domain<F>
 where
     F: FftField,

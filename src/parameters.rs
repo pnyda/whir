@@ -20,6 +20,7 @@ pub const fn default_max_pow(num_variables: usize, log_inv_rate: usize) -> usize
 
 /// Defines the soundness type for the proof system.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(C)]
 pub enum SoundnessType {
     /// Unique decoding guarantees a single valid witness.
     UniqueDecoding,
@@ -55,6 +56,7 @@ impl FromStr for SoundnessType {
 /// Represents the parameters for a multivariate polynomial.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(bound = "")]
+#[repr(C)]
 pub struct MultivariateParameters<F> {
     /// The number of variables in the polynomial.
     pub num_variables: usize,
@@ -94,6 +96,7 @@ pub enum FoldingFactorError {
 
 /// Defines the folding factor for polynomial commitments.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[repr(C)]
 pub enum FoldingFactor {
     /// A fixed folding factor used in all rounds.
     Constant(usize),
@@ -207,12 +210,14 @@ impl FoldingFactor {
 }
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[repr(C)]
 pub enum MerkleProofStrategy {
     Compressed,
     Uncompressed,
 }
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[repr(C)]
 pub enum DeduplicationStrategy {
     Enabled,  // Sort + dedup indices
     Disabled, // Preserve order/multiplicity

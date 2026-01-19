@@ -22,11 +22,12 @@ use crate::{
     },
     utils::{ark_eq, f64_eq_abs},
 };
-#[derive(Copy, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(bound = r#"
     LeafParam<MerkleConfig>: CanonicalSerialize + CanonicalDeserialize,
     TwoToOneParam<MerkleConfig>: CanonicalSerialize + CanonicalDeserialize
 "#)]
+#[repr(C)]
 pub struct WhirConfig<F, MerkleConfig, PowStrategy>
 where
     F: FftField,
@@ -84,6 +85,7 @@ pub fn default_rs<F: FftField>() -> Arc<dyn ReedSolomon<F>> {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Default)]
 #[serde(bound = "F: CanonicalSerialize + CanonicalDeserialize")]
+#[repr(C)]
 pub struct RoundConfig<F>
 where
     F: FftField,
