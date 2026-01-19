@@ -2,8 +2,6 @@
 name = "whir"
 version = "0.1.0"
 edition = "2021"
-
-default-run = "main"
 rust-version = "1.83.0"
 
 [lints.clippy]
@@ -33,21 +31,19 @@ similar_names = "allow"
 redundant_closure_for_method_calls = "allow"
 
 [dependencies]
-ark-std = { version = "0.5", features = ["std"] }
-ark-ff = { version = "0.5", features = ["asm", "std"] }
+ark-std = { version = "0.5" }
+ark-ff = { version = "0.5" }
 ark-serialize = "0.5"
 ark-crypto-primitives = { version = "0.5", features = ["merkle_tree"] }
 ark-poly = "0.5"
 blake3 = "1.5.0"
 sha3 = "0.10"
-rand = "0.8"
-clap = { version = "4.4.17", features = ["derive"] }
+rand = { version = "0.8", default-features = false }
+# clap = { version = "4.4.17", features = ["derive"] }
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-spongefish = { git = "https://github.com/arkworks-rs/spongefish", features = [
-    "arkworks-algebra",
-], rev = "ecb4f08373ed930175585c856517efdb1851fb47"}
-spongefish-pow = { git = "https://github.com/arkworks-rs/spongefish" , rev = "ecb4f08373ed930175585c856517efdb1851fb47" }
+# serde_json = "1.0"
+spongefish = { path = "../spongefish/spongefish", features = ["arkworks-algebra"] }
+spongefish-pow = { path = "../spongefish/spongefish-pow" }
 rayon = { version = "1.10.0", optional = true }
 thiserror = "2.0"
 itertools = "0.14"
@@ -64,7 +60,7 @@ divan = { version = "2.10.0", package = "codspeed-divan-compat" }
 debug = true
 
 [features]
-default = ["parallel"]
+default = []
 parallel = [
     "dep:rayon",
     "ark-poly/parallel",

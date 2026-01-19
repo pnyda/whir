@@ -11,7 +11,7 @@ use rand::{CryptoRng, RngCore};
 use serde::{Deserialize, Serialize};
 use spongefish::{
     ByteDomainSeparator, BytesToUnitDeserialize, BytesToUnitSerialize, DomainSeparator,
-    DuplexSpongeInterface, ProofError, ProofResult, ProverState, Unit, VerifierState,
+    DuplexSpongeInterface, ProofError, ProofResult, Unit, VerifierState,
 };
 
 use super::{digest::GenericDigest, IdentityDigestConverter};
@@ -72,8 +72,10 @@ where
     }
 }
 
+#[cfg(feature = "getrandom")]
 impl<F: Field, LeafH, CompressH, const N: usize>
-    DigestToUnitSerialize<MerkleTreeParams<F, LeafH, CompressH, GenericDigest<N>>> for ProverState
+    DigestToUnitSerialize<MerkleTreeParams<F, LeafH, CompressH, GenericDigest<N>>>
+    for rand::rngs::ProverState
 where
     LeafH: CRHScheme<Input = [F], Output = GenericDigest<N>>,
     CompressH: TwoToOneCRHScheme<Input = GenericDigest<N>, Output = GenericDigest<N>>,
@@ -84,7 +86,8 @@ where
     }
 }
 
-impl<H, U, R> HintSerialize for ProverState<H, U, R>
+#[cfg(feature = "getrandom")]
+impl<H, U, R> HintSerialize for rand::rngs::ProverState<H, U, R>
 where
     U: Unit,
     H: DuplexSpongeInterface<U>,
