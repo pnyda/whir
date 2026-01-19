@@ -14,7 +14,7 @@ use super::Witness;
 use crate::{
     poly_utils::coeffs::CoefficientList,
     whir::{
-        parameters::WhirConfig,
+        parameters::{default_rs, WhirConfig},
         utils::{compute_ood_response, sample_ood_points, DigestToUnitSerialize},
     },
 };
@@ -75,7 +75,7 @@ where
         let mut stacked_leaves = vec![F::zero(); num_leaves * stacked_leaf_size];
 
         for (poly_idx, poly) in polynomials.iter().enumerate() {
-            let evals = self.config.basefield_reed_solomon.interleaved_encode(
+            let evals = default_rs().interleaved_encode(
                 poly.coeffs(),
                 expansion,
                 self.config.folding_factor.at_round(0),

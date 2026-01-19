@@ -212,7 +212,7 @@ pub enum MerkleProofStrategy {
     Uncompressed,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum DeduplicationStrategy {
     Enabled,  // Sort + dedup indices
     Disabled, // Preserve order/multiplicity

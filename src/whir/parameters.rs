@@ -1,16 +1,16 @@
+use ark_crypto_primitives::merkle_tree::{Config, LeafParam, TwoToOneParam};
+use ark_ff::FftField;
+use ark_poly::EvaluationDomain;
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use core::panic;
+use serde::{Deserialize, Serialize};
 use std::{
     f64::consts::LOG2_10,
     fmt::{Debug, Display},
     marker::PhantomData,
     sync::Arc,
 };
-
-use ark_crypto_primitives::merkle_tree::{Config, LeafParam, TwoToOneParam};
-use ark_ff::FftField;
-use ark_poly::EvaluationDomain;
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
-use serde::{Deserialize, Serialize};
+use tinyvec::ArrayVec;
 
 use crate::{
     crypto::fields::FieldWithSize,
@@ -22,7 +22,7 @@ use crate::{
     },
     utils::{ark_eq, f64_eq_abs},
 };
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Copy, Clone, Serialize, Deserialize)]
 #[serde(bound = r#"
     LeafParam<MerkleConfig>: CanonicalSerialize + CanonicalDeserialize,
     TwoToOneParam<MerkleConfig>: CanonicalSerialize + CanonicalDeserialize
@@ -50,7 +50,7 @@ where
     pub starting_folding_pow_bits: f64,
 
     pub folding_factor: FoldingFactor,
-    pub round_parameters: Vec<RoundConfig<F>>,
+    pub round_parameters: ArrayVec<[RoundConfig<F>; 30]>,
 
     pub final_queries: usize,
     pub final_pow_bits: f64,
@@ -76,19 +76,13 @@ where
 
     // Batch size
     pub batch_size: usize,
-
-    // Reed Solomon vtable
-    #[serde(skip, default = "default_rs")]
-    pub reed_solomon: Arc<dyn ReedSolomon<F>>,
-    #[serde(skip, default = "default_rs")]
-    pub basefield_reed_solomon: Arc<dyn ReedSolomon<F::BasePrimeField>>,
 }
 
-fn default_rs<F: FftField>() -> Arc<dyn ReedSolomon<F>> {
+pub fn default_rs<F: FftField>() -> Arc<dyn ReedSolomon<F>> {
     Arc::new(RSDefault)
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Default)]
 #[serde(bound = "F: CanonicalSerialize + CanonicalDeserialize")]
 pub struct RoundConfig<F>
 where
@@ -184,7 +178,7 @@ where
             }
         };
 
-        let mut round_parameters = Vec::with_capacity(num_rounds);
+        let mut round_parameters = ArrayVec::new();
         num_variables -= whir_parameters.folding_factor.at_round(0);
         for round in 0..num_rounds {
             // Queries are set w.r.t. to old rate, while the rest to the new rate
@@ -292,8 +286,6 @@ where
             two_to_one_params: whir_parameters.two_to_one_params,
             merkle_proof_strategy: whir_parameters.merkle_proof_strategy,
             batch_size: whir_parameters.batch_size,
-            reed_solomon,
-            basefield_reed_solomon,
         }
     }
 

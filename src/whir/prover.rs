@@ -24,7 +24,7 @@ use crate::{
     utils::expand_randomness,
     whir::{
         merkle,
-        parameters::RoundConfig,
+        parameters::{default_rs, RoundConfig},
         utils::{
             get_challenge_stir_queries, rlc_batched_leaves, sample_ood_points,
             DigestToUnitSerialize,
@@ -373,7 +373,7 @@ where
         let new_domain = self.config.starting_domain.scale(2);
         let expansion = new_domain.size() / batched_folded_poly.num_coeffs();
         let folding_factor_next = self.config.folding_factor.at_round(1);
-        let batched_evals = self.config.reed_solomon.interleaved_encode(
+        let batched_evals = default_rs().interleaved_encode(
             batched_folded_poly.coeffs(),
             expansion,
             folding_factor_next,
@@ -602,7 +602,7 @@ where
         // Fold the coefficients, and compute fft of polynomial (and commit)
         let new_domain = round_state.domain.scale(2);
         let expansion = new_domain.size() / folded_coefficients.num_coeffs();
-        let evals = self.config.reed_solomon.interleaved_encode(
+        let evals = default_rs().interleaved_encode(
             folded_coefficients.coeffs(),
             expansion,
             folding_factor_next,
