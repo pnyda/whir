@@ -31,8 +31,8 @@ similar_names = "allow"
 redundant_closure_for_method_calls = "allow"
 
 [dependencies]
-ark-std = { version = "0.5" }
-ark-ff = { version = "0.5" }
+ark-std = "0.5"
+ark-ff = "0.5"
 ark-serialize = "0.5"
 ark-crypto-primitives = { version = "0.5", features = ["merkle_tree"] }
 ark-poly = "0.5"
@@ -79,3 +79,8 @@ harness = false
 [[bench]]
 name = "sumcheck"
 harness = false
+
+[patch.crates-io]
+ark-ff = { path = "../algebra/ff" }
+ark-serialize = { path = "../algebra/serialize" }
+ark-poly = { path = "../algebra/poly" }
